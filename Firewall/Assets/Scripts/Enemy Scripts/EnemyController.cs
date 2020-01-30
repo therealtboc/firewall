@@ -6,9 +6,16 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     //****************************************************************** Variable Declaration ******************************************************************
+    //public GameObject Player;
+    public Transform target;
+
     public CharacterController2D enemyController;
     public float enemyRunSpeed = 30f;
     public float horizontalMove = 1f;
+
+    private float changeDirection = 1f;
+
+    bool playerFound = false;
        
     private bool groundedCheck = true;
 
@@ -16,39 +23,53 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         //horizontalMove *= enemyRunSpeed;
+        target = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
     }
 
     //****************************************************************** Update function ******************************************************************
     // Update is called once per frame
     void Update()
     {
-        
+        if (playerFound)
+        {
+            transform.position = Vector2.MoveTowards(transform.position, target.position, enemyRunSpeed * Time.deltaTime); //change speed
+        }
     }
 
     //****************************************************************** FixedUpdate function ******************************************************************
     void FixedUpdate()
     {
-        horizontalMove = horizontalMove * enemyRunSpeed;
-        //Debug.Log(horizontalMove);
-        horizontalMove = 1;
-
-        groundedCheck = enemyController.getGrounded();
-        Debug.Log(groundedCheck + " " + horizontalMove);
-        if (groundedCheck)
+        if (!playerFound)
         {
-            Debug.Log("we're moving");
-            enemyController.Move(horizontalMove * Time.fixedDeltaTime, false);
-        }
+            horizontalMove = horizontalMove * enemyRunSpeed;
+            //Debug.Log(horizontalMove);
 
-        //enemyController.Move(horizontalMove * Time.fixedDeltaTime, false);
+            groundedCheck = enemyController.getGrounded();
+            Debug.Log(groundedCheck + " " + horizontalMove);
+            if (groundedCheck)
+            {
+                enemyController.Move(horizontalMove * Time.fixedDeltaTime, false);
+            }
+
+            horizontalMove = changeDirection;
+        }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        //if (collision.gameObject.tag == "Environment")
-        //{
-        //    horizontalMove *= -1;
-        //}
+        if (collision.gameObject.tag == "Environment")
+        {
+            changeDirection *= -1f;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.tag == "Player")
+        {
+            playerFound = true;
+            //Debug.Log("player found");
+        }
     }
 }
 

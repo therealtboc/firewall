@@ -7,6 +7,10 @@ using UnityEngine.Events;
 public class CharacterController2D : MonoBehaviour
 {
     //****************************************************************** Variable Declaration ******************************************************************
+    // public Vector2 position = new Vector2(0.0f, 0.0f);
+    //public float xPosition;
+
+    public GameObject Entity;
 
     [SerializeField] private float m_JumpForce = 400f;                          // Amount of force added when the player jumps.
     [Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
@@ -47,6 +51,15 @@ public class CharacterController2D : MonoBehaviour
 
         if (OnCrouchEvent == null)
             OnCrouchEvent = new BoolEvent();
+    }
+
+    //****************************************************************** Update function ******************************************************************
+
+    private void Update()
+    {
+     
+        //position.x = xPosition;
+        //transform.position = position;
     }
 
     //****************************************************************** FixedUpdate function ******************************************************************
@@ -146,21 +159,24 @@ public class CharacterController2D : MonoBehaviour
         //******************** JUMPING ********************
 
         // If the player should jump...
-        if (m_Grounded && /*jump*/ Input.GetButtonDown("Jump"))
+        if (Entity.tag == "Player")
         {
-            // Add a vertical force to the player.
-            m_Grounded = false;
-            m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
-        }
-        else if (!m_Grounded && /*jump*/ Input.GetButtonDown("Jump") && doubleJump == 1) //Allows for a second jump while not grounded
-        {
-            
+            if (m_Grounded && /*jump*/ Input.GetButtonDown("Jump"))
+            {
+                // Add a vertical force to the player.
+                m_Grounded = false;
+                m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
+            }
+            else if (!m_Grounded && /*jump*/ Input.GetButtonDown("Jump") && doubleJump == 1) //Allows for a second jump while not grounded
+            {
+
                 m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce)); //applies jump force
                 doubleJump = 0; //sets doubleJump to 0
-        }
-        else //prevents a third jump
-        {
+            }
+            else //prevents a third jump
+            {
 
+            }
         }
     }
 
